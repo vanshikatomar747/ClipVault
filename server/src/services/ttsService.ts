@@ -24,51 +24,73 @@ export class TTSService {
    * Generates standard TTS
    */
   static async generateStandardTTS(text: string, voice: string, accent: string, signal?: AbortSignal): Promise<string> {
-    const cleanedText = this.cleanText(text);
-    const form = new FormData();
-    form.append('text', cleanedText);
-    form.append('voice', voice);
-    form.append('accent', accent);
+    try {
+      const cleanedText = this.cleanText(text);
+      const form = new FormData();
+      form.append('text', cleanedText);
+      form.append('voice', voice);
+      form.append('accent', accent);
 
-    const response = await axios.post(`${PYTHON_ENGINE_URL}/generate`, form, {
-      headers: form.getHeaders(),
-      responseType: 'arraybuffer',
-      signal
-    });
+      console.log(`[TTS] Requesting standard TTS from Python worker at: ${PYTHON_ENGINE_URL}/generate`);
+      const response = await axios.post(`${PYTHON_ENGINE_URL}/generate`, form, {
+        headers: form.getHeaders(),
+        responseType: 'arraybuffer',
+        signal
+      });
 
-    const fileName = `tts_${Date.now()}.mp3`;
-    const dir = path.join(__dirname, '../../uploads');
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+      const fileName = `tts_${Date.now()}.mp3`;
+      const dir = path.join(__dirname, '../../uploads');
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      const tempPath = path.join(dir, fileName);
+      fs.writeFileSync(tempPath, response.data);
+      return `/uploads/${fileName}`;
+    } catch (error: any) {
+      console.error('[TTS AXIOS ERROR]', {
+        message: error.message,
+        code: error.code,
+        status: error.response?.status,
+        data: error.response?.data ? Buffer.from(error.response.data).toString('utf8') : null
+      });
+      throw error;
     }
-    const tempPath = path.join(dir, fileName);
-    fs.writeFileSync(tempPath, response.data);
-    return `/uploads/${fileName}`;
   }
 
   /**
    * Generates cloned TTS using saved embedding
    */
   static async generateClonedTTS(text: string, embeddingPath: string, signal?: AbortSignal): Promise<string> {
-    const cleanedText = this.cleanText(text);
-    const form = new FormData();
-    form.append('text', cleanedText);
-    form.append('embedding_path', embeddingPath);
+    try {
+      const cleanedText = this.cleanText(text);
+      const form = new FormData();
+      form.append('text', cleanedText);
+      form.append('embedding_path', embeddingPath);
 
-    const response = await axios.post(`${PYTHON_ENGINE_URL}/generate_cloned`, form, {
-      headers: form.getHeaders(),
-      responseType: 'arraybuffer',
-      signal
-    });
+      console.log(`[TTS] Requesting cloned TTS from Python worker at: ${PYTHON_ENGINE_URL}/generate_cloned`);
+      const response = await axios.post(`${PYTHON_ENGINE_URL}/generate_cloned`, form, {
+        headers: form.getHeaders(),
+        responseType: 'arraybuffer',
+        signal
+      });
 
-    const fileName = `tts_cloned_${Date.now()}.wav`;
-    const dir = path.join(__dirname, '../../uploads');
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+      const fileName = `tts_cloned_${Date.now()}.wav`;
+      const dir = path.join(__dirname, '../../uploads');
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      const tempPath = path.join(dir, fileName);
+      fs.writeFileSync(tempPath, response.data);
+      return `/uploads/${fileName}`;
+    } catch (error: any) {
+      console.error('[TTS CLONED AXIOS ERROR]', {
+        message: error.message,
+        code: error.code,
+        status: error.response?.status,
+        data: error.response?.data ? Buffer.from(error.response.data).toString('utf8') : null
+      });
+      throw error;
     }
-    const tempPath = path.join(dir, fileName);
-    fs.writeFileSync(tempPath, response.data);
-    return `/uploads/${fileName}`;
   }
 
   /**
