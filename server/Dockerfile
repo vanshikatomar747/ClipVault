@@ -1,5 +1,5 @@
-# Use official Node.js image as base
-FROM node:18-slim
+# Use official Node.js image as base (matching local Node 20)
+FROM node:20-slim
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
@@ -20,9 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Set up working directory for the Express server
 WORKDIR /app
 
-# Copy dependency files and install Node.js dependencies
+# Copy dependency files and install Node.js dependencies (forcing devDependencies like typescript to install)
 COPY package*.json ./
-RUN npm install
+RUN npm install --include=dev
 
 # Copy server code
 COPY tsconfig.json ./
