@@ -39,37 +39,7 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-
-    const allowedOrigins = [
-      'http://localhost:3000', 
-      'http://localhost:5173', 
-      'http://localhost:5174', 
-      'http://localhost', 
-      'https://localhost',
-      'capacitor://localhost'
-    ];
-
-    if (process.env.CORS_ORIGIN) {
-      const envOrigins = process.env.CORS_ORIGIN.split(',');
-      if (envOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-    }
-
-    // Allow localhost or local IP addresses (192.168.x.x, 10.x.x.x, 172.x.x.x, etc.)
-    const isLocal = origin.startsWith('http://localhost') || 
-                    origin.startsWith('https://localhost') ||
-                    origin.startsWith('capacitor://') ||
-                    /^http:\/\/(127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin);
-
-    if (allowedOrigins.indexOf(origin) !== -1 || isLocal) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true,
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
