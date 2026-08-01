@@ -36,8 +36,19 @@ if (fs.existsSync(envPath)) {
   let content = fs.readFileSync(envPath, 'utf8');
   
   // Look for VITE_API_URL line in any format and replace it
-  const regex = /^VITE_API_URL=.*/m;
-  if (regex.test(content)) {
+  const regex = /^VITE_API_URL=(.*)/m;
+  const match = content.match(regex);
+  if (match) {
+    const currentUrl = match[1].trim();
+    const isRemote = currentUrl.startsWith('https://') || 
+                     currentUrl.includes('.onrender.com') || 
+                     (!currentUrl.includes('localhost') && !currentUrl.includes('127.0.0.1') && !/^(192\.168\.|10\.|172\.)/.test(currentUrl.replace(/^https?:\/\//, '')));
+    
+    if (isRemote) {
+      console.log(`[ClipVault Auto-IP] Skipping update: VITE_API_URL is already set to a remote production URL: ${currentUrl}`);
+      process.exit(0);
+    }
+    
     content = content.replace(regex, `VITE_API_URL=http://${localIp}:4000/api`);
     fs.writeFileSync(envPath, content, 'utf8');
     console.log(`[ClipVault Auto-IP] Successfully updated VITE_API_URL in .env to host IP: http://${localIp}:4000/api`);
