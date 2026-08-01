@@ -1,0 +1,26 @@
+# Dependency directories
+node_modules/
+venv/
+.turbo/
+.next/
+out/
+build/
+dist/
+
+# Env & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# Uploads, local storage and temporary files
+uploads/
+python_engine/storage/
+*.log
+*.mp3
+*.wav
+
+# OS & Editors
+.DS_Store
+.vscode/
+.idea/

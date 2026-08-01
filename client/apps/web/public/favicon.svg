@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Background Clipboard / Vault -->
+  <rect x="72" y="80" width="368" height="408" rx="56" fill="#334155" />
+  
+  <!-- Paper Insert -->
+  <rect x="120" y="152" width="272" height="304" rx="24" fill="#FAFAFA" filter="url(#shadow)" />
+  
+  <!-- Lock Shackle (acting as the clipboard clip hinge) -->
+  <path d="M 192 88 V 72 C 192 36.65 220.65 8 256 8 C 291.35 8 320 36.65 320 72 V 88" fill="none" stroke="#7E9D76" stroke-width="40" stroke-linecap="round" />
+  
+  <!-- Lock Body / Clipboard Clip -->
+  <rect x="160" y="56" width="192" height="88" rx="28" fill="#A8C3A0" filter="url(#shadow)" />
+  
+  <!-- Inner Design: Checkmark / stylized 'V' -->
+  <path d="M 196 264 L 244 312 L 324 200" fill="none" stroke="#334155" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

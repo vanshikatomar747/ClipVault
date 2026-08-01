@@ -1,0 +1,180 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-cv-sage: #A8C3A0;
+  --color-cv-beige: #FAFAFA;
+  --color-cv-cream: #FFFFFF;
+  --color-cv-olive: #7E9D76;
+  --color-cv-brown: #334155;
+  --font-sans: "Outfit", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+@layer base {
+  body {
+    @apply bg-cv-beige text-slate-800 font-sans antialiased;
+  }
+}
+
+@layer components {
+  .notebook-paper {
+    --line-spacing: 2rem;
+    --text-offset: 4rem; /* Exactly 2x line-spacing to perfectly center text between the lines */
+    
+    background-color: #fff;
+    background-image: 
+      linear-gradient(90deg, transparent 79px, #A8C3A0 79px, #A8C3A0 81px, transparent 81px),
+      linear-gradient(transparent 0, transparent calc(var(--line-spacing) - 2px), #e5e7eb calc(var(--line-spacing) - 2px), #e5e7eb var(--line-spacing));
+    background-size: 100% var(--line-spacing);
+    background-position: 0 0;
+    padding-left: 95px;
+    padding-right: 20px;
+    padding-top: var(--text-offset);
+    min-height: 100%;
+  }
+  
+  .notebook-paper-dark {
+    --line-spacing: 2rem;
+    --text-offset: 4rem;
+    
+    background-color: #18181b;
+    background-image: 
+      linear-gradient(90deg, transparent 79px, #7E9D76 79px, #7E9D76 81px, transparent 81px),
+      linear-gradient(transparent 0, transparent calc(var(--line-spacing) - 2px), #27272a calc(var(--line-spacing) - 2px), #27272a var(--line-spacing));
+    background-size: 100% var(--line-spacing);
+    background-position: 0 0;
+    padding-left: 95px;
+    padding-right: 20px;
+    padding-top: var(--text-offset);
+    min-height: 100%;
+  }
+  
+  .notebook-paper .ProseMirror,
+  .notebook-paper .ProseMirror p,
+  .notebook-paper p,
+  .notebook-paper-dark .ProseMirror,
+  .notebook-paper-dark .ProseMirror p,
+  .notebook-paper-dark p {
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: var(--line-spacing) !important;
+    outline: none !important;
+  }
+  .tiptap-editor-content mark,
+  .ProseMirror mark {
+    background-color: rgba(168, 195, 160, 0.4);
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.25rem;
+  }
+}
+/* trigger rebuild */
+
+/* Custom react-calendar styling */
+.react-calendar {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  font-family: inherit !important;
+  line-height: 1.5em !important;
+}
+
+.react-calendar__navigation {
+  margin-bottom: 1rem !important;
+}
+
+.react-calendar__navigation button {
+  min-width: 44px;
+  background: transparent !important;
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  color: inherit;
+}
+
+.react-calendar__navigation button:disabled {
+  background-color: transparent !important;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #f4f4f5 !important; /* zinc-100 */
+}
+
+.dark .react-calendar__navigation button:enabled:hover,
+.dark .react-calendar__navigation button:enabled:focus {
+  background-color: #27272a !important; /* zinc-800 */
+}
+
+.react-calendar__month-view__weekdays {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #a1a1aa; /* zinc-400 */
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  padding: 0.5em !important;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none !important;
+}
+
+.react-calendar__month-view__days__day {
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 0.75rem !important;
+  padding: 0.75em 0 !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: inherit !important;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #d4d4d8 !important; /* zinc-300 */
+}
+
+.dark .react-calendar__month-view__days__day--neighboringMonth {
+  color: #52525b !important; /* zinc-600 */
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #f4f4f5 !important;
+  color: inherit;
+}
+
+.dark .react-calendar__tile:enabled:hover,
+.dark .react-calendar__tile:enabled:focus {
+  background-color: #27272a !important;
+  color: inherit;
+}
+
+.react-calendar__tile--active,
+.react-calendar__tile--hasActive {
+  background: var(--color-cv-sage) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px 0 rgba(168, 195, 160, 0.4) !important;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background: var(--color-cv-olive) !important;
+}
+
+.react-calendar__tile--now {
+  background: transparent !important;
+  color: var(--color-cv-sage) !important;
+  font-weight: 700;
+}

@@ -1,0 +1,23 @@
+node_modules
+dist
+build
+.next
+out
+.vercel
+.turbo
+coverage
+
+# env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS
+.DS_Store
+*.pem
+
+# Editor
+.vscode/
+.idea/
