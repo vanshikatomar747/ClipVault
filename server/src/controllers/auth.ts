@@ -27,6 +27,12 @@ export const requestOTP = async (req: Request, res: Response, next: NextFunction
       return;
     }
 
+    if (process.env.SKIP_OTP_VERIFICATION === 'true') {
+      console.log(`[AUTH] Skipping OTP generation for ${email} (SKIP_OTP_VERIFICATION is active)`);
+      res.status(200).json({ message: 'OTP verification is skipped. Enter any 6-digit code to register.' });
+      return;
+    }
+
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
@@ -50,10 +56,13 @@ export const verifyOTPAndRegister = async (req: Request, res: Response, next: Ne
       return;
     }
 
-    const otpRecord = await OTPModel.findOne({ email, otp });
-    if (!otpRecord) {
-      res.status(400).json({ message: 'Invalid or expired OTP' });
-      return;
+    let otpRecord = null;
+    if (process.env.SKIP_OTP_VERIFICATION !== 'true') {
+      otpRecord = await OTPModel.findOne({ email, otp });
+      if (!otpRecord) {
+        res.status(400).json({ message: 'Invalid or expired OTP' });
+        return;
+      }
     }
 
     const userExists = await UserModel.findOne({ email });
@@ -84,7 +93,9 @@ export const verifyOTPAndRegister = async (req: Request, res: Response, next: Ne
     user.defaultNotebookId = defaultNotebook._id.toString();
     await user.save();
 
-    await OTPModel.deleteOne({ _id: otpRecord._id });
+    if (otpRecord) {
+      await OTPModel.deleteOne({ _id: otpRecord._id });
+    }
 
     res.status(201).json({
       user: {
@@ -131,10 +142,13 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
   try {
     const { email, otp, newPassword } = req.body;
 
-    const otpRecord = await OTPModel.findOne({ email, otp });
-    if (!otpRecord) {
-      res.status(400).json({ message: 'Invalid or expired OTP' });
-      return;
+    let otpRecord = null;
+    if (process.env.SKIP_OTP_VERIFICATION !== 'true') {
+      otpRecord = await OTPModel.findOne({ email, otp });
+      if (!otpRecord) {
+        res.status(400).json({ message: 'Invalid or expired OTP' });
+        return;
+      }
     }
 
     const user = await UserModel.findOne({ email });
@@ -147,7 +161,9 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
     user.passwordHash = await bcrypt.hash(newPassword, salt);
     await user.save();
 
-    await OTPModel.deleteOne({ _id: otpRecord._id });
+    if (otpRecord) {
+      await OTPModel.deleteOne({ _id: otpRecord._id });
+    }
 
     res.status(200).json({ message: 'Password reset successful' });
   } catch (error) {
