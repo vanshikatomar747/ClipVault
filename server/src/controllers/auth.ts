@@ -49,20 +49,11 @@ export const requestOTP = async (req: Request, res: Response, next: NextFunction
 
 export const verifyOTPAndRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { name, email, password, otp } = req.body;
+    const { name, email, password } = req.body;
 
-    if (!name || !email || !password || !otp) {
+    if (!name || !email || !password) {
       res.status(400).json({ message: 'Please provide all fields' });
       return;
-    }
-
-    let otpRecord = null;
-    if (process.env.SKIP_OTP_VERIFICATION !== 'true') {
-      otpRecord = await OTPModel.findOne({ email, otp });
-      if (!otpRecord) {
-        res.status(400).json({ message: 'Invalid or expired OTP' });
-        return;
-      }
     }
 
     const userExists = await UserModel.findOne({ email });
@@ -92,10 +83,6 @@ export const verifyOTPAndRegister = async (req: Request, res: Response, next: Ne
 
     user.defaultNotebookId = defaultNotebook._id.toString();
     await user.save();
-
-    if (otpRecord) {
-      await OTPModel.deleteOne({ _id: otpRecord._id });
-    }
 
     res.status(201).json({
       user: {
